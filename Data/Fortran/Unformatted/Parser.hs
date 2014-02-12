@@ -1,17 +1,27 @@
-module Data.Fortran.Unformatted.Parser (unformatted) where
+module Data.Fortran.Unformatted.Parser (
+    unformatted
+  , fromUnformatted
+) where
 
-import Data.ByteString (ByteString)
-import Data.Attoparsec as P
-import Control.Applicative
+import qualified Data.ByteString as BS (ByteString)
+import qualified Data.ByteString.Lazy as LBS (ByteString, fromChunks)
+import Data.Attoparsec as P (Parser, word8, anyWord8, many1, take, (<?>))
+import Data.Attoparsec.ByteString.Lazy (parse, eitherResult)
+import Control.Applicative ((*>))
+import Control.Monad (when)
 
-unformatted :: Parser [ByteString]
+unformatted :: Parser [BS.ByteString]
 unformatted = (bof <?> "Bad BOF") *> (many1 block <?> "Empty file")
   where
     bof = word8 75
     block = do
         header <- anyWord8
-        if header /= 130
-            then do block' <- P.take $ min 128 $ fromIntegral header
-                    _ <- word8 header <?> "Bad trailer"
-                    return block'
-            else fail "eof"
+        when (header == 130) (fail "eof")
+        block' <- P.take $ min 128 $ fromIntegral header
+        _ <- word8 header <?> "Bad trailer"
+        return block'
+
+fromUnformatted :: Monad m => LBS.ByteString -> m LBS.ByteString
+fromUnformatted bs = case (eitherResult . parse unformatted) bs of
+                        Left e  -> fail e
+                        Right r -> return $ LBS.fromChunks r

@@ -1,12 +1,5 @@
-{-# LANGUAGE RankNTypes
-           , FlexibleContexts
-           #-}
-module Data.Fortran.Unformatted (
-    toUnformatted
-  , fromUnformatted
-) where
+module Data.Fortran.Unformatted (toUnformatted , fromUnformatted) where
     
-
 import Data.Monoid (mconcat)
 import Data.Maybe (fromMaybe)
 import Data.ByteString.Lazy as BS

@@ -4,8 +4,6 @@ import Test.Hspec
 import Data.Fortran.Unformatted
 import System.IO (IOMode(ReadMode), openFile)
 import Data.ByteString.Lazy as BS (hGetContents, length)
-import Control.Monad (liftM)
-
 
 spec :: Spec
 spec = describe "Data.Fortran.Unformatted" $ do

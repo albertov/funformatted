@@ -24,6 +24,8 @@ library
                    , attoparsec
                    , pipes
                    , pipes-bytestring >= 2.0.0
+                   , pipes-parse
+                   , pipes-attoparsec
                     
   -- hs-source-dirs:      
   default-language:  Haskell2010
